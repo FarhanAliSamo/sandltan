@@ -8,7 +8,7 @@ use App\Models\WebinarRegistration;
 use App\Mail\WebinarRegistrationMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
-
+use App\Mail\RegistrarAttendMail;
 
 class WebinarRegistrationController extends Controller
 {
@@ -67,12 +67,16 @@ class WebinarRegistrationController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|max:12',
-            'slot' => 'required', // Format: 2025-05-26T16:52:00+05:00 or with timezone
         ]);
 
+        if ($request->slot == 'yesterdays_now') {
+            // If 'yesterdays_now' is set, save current UTC time minus 1 minute
+            $slotUtc = Carbon::now('UTC')->subMinute();
+        } else {
+            // Otherwise, parse the provided slot (assumed UTC)
+            $slotUtc = Carbon::parse($request->slot);
+        }
 
-        // 1. Parse the input (which is already in UTC)
-        $slotUtc = Carbon::parse($request->slot); // "Z" in input means UTC
 
         // 2. If you need to display it in user's local time (As    ia/Karachi)
         //$userLocalTime = $slotUtc->copy()->setTimezone('Asia/Karachi');
@@ -86,12 +90,15 @@ class WebinarRegistrationController extends Controller
         // Optional: Store user's timezone name or offset for UI
         $timezoneOffset = $slotUtc->getTimezone()->getName();
 
-        $existing = WebinarRegistration::where('slot', $slotUtc)
-            ->where('email', $request->email)
-            ->first();
 
-        if ($existing) {
-            return response()->json(['message' => 'You have already registered for this slot.'], 400);
+        if ($request->slot != 'yesterdays_now') {
+            $existing = WebinarRegistration::where('slot', $slotUtc)
+                ->where('email', $request->email)
+                ->first();
+
+            if ($existing) {
+                return response()->json(['message' => 'You have already registered for this slot.'], 400);
+            }
         }
 
         $registration = new WebinarRegistration();
@@ -101,12 +108,22 @@ class WebinarRegistrationController extends Controller
         $registration->slot = $slotUtc; // Save in global time (UTC)
         $registration->timezone = $timezoneOffset;
         $registration->unique_id = bin2hex(random_bytes(16));
+
+        if ($request->slot == 'yesterdays_now') {
+            $registration->attend = 1;
+            $registration->yesterday = 1;
+             Mail::to(env('ADMIN_EMAIL'))->send(new RegistrarAttendMail($registration, "Registrar Attend Email Alert!"));
+        }
+
         $registration->save();
 
-        Mail::to($registration->email)->send(new WebinarRegistrationMail($registration, "Registration Successful!"));
+        if ($request->slot == 'yesterdays_now') {
+            return response()->json(['message' => 'Registration successful! you will redirect to yesterday webinar','link' =>  url('webinar-show/'.$registration->unique_id)], 200);
+        }else{
+            Mail::to($registration->email)->send(new WebinarRegistrationMail($registration, "Registration Successful!"));
+            return response()->json(['message' => 'Registration successful!','link' =>  url('webinar-show/'.$registration->unique_id)], 200);
+        }
 
-        return response()->json(['message' => 'Registration successful!'], 200);
     }
- 
+
 }
- 

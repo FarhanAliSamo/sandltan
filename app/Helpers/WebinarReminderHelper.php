@@ -51,7 +51,7 @@ class WebinarReminderHelper
 
             if ($diffInMinutes == 61) {
                 Mail::to($registration->email)->send(new WebinarReminderMail($registration, "Webinar starting in an hour"));
-            } elseif ($diffInMinutes == 6) {
+            } elseif ($diffInMinutes == 5) {
                 Mail::to($registration->email)->send(new WebinarReminderMail($registration, "Webinar starting in 5 minutes "));
             } elseif ($diffInMinutes == 0) {
                 Mail::to($registration->email)->send(new WebinarLiveMail($registration, "Webinar is live now!"));

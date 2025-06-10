@@ -161,14 +161,12 @@
         @php
             use Carbon\Carbon;
 
-
             $name = $registration->name;
             $email = $registration->email;
 
             $title = urlencode('Live Webinar: How to Protect Your Family After You Are Gone');
             $details = urlencode('Join our live webinar session.');
             $webinarLink = url('webinar-show/'.$registration->unique_id);
-
 
         @endphp
 

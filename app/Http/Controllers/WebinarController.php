@@ -10,12 +10,14 @@ use App\Mail\WebinarRegistrationMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\WebinarReminderHelper;
+use App\Mail\RegistrarAttendMail;
 
 class WebinarController extends Controller
 {
 
   public function show($uid)
     {
+
         $data = WebinarRegistration::where('unique_id', $uid)->first();
         if (!$data) {
             abort(404, 'Registration not found.');
@@ -24,6 +26,7 @@ class WebinarController extends Controller
         $slotStatus = WebinarReminderHelper::checkSlotTiming($data);
 
         // dd($data,$slotStatus);
+
 
         if ($slotStatus === 'before') {
             return view('frontend.webinar.timer', compact('data')); // show countdown/timer page
@@ -34,9 +37,16 @@ class WebinarController extends Controller
         }
 
 
+        Mail::to(env('ADMIN_EMAIL'))->send(new RegistrarAttendMail($data, "Registrar Attend Email Alert!"));
+
+        $data->attend = 1 ;
+        $data->save();
+
         // continue to actual webinar view
         return view('frontend.webinar.live', compact('data'));
     }
+
+    
     public function QuestionStore(Request $request)
     {
         $request->validate([
