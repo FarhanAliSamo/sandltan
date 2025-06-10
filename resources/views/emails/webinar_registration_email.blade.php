@@ -187,7 +187,7 @@
                 </div>
 
                 <div class="schedule-info" id="schedule-time">
-                    Scheduled for: <strong>{{ $slotLocalDefault }}</strong>
+                    Scheduled for: <strong>tests</strong>
                 </div>
 
                 <a style="color: #fff;" href="{{ $webinarLink }}" class="webinar-btn" target="_blank">Join Webinar</a>
@@ -215,25 +215,43 @@
 
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const utcDate = new Date("{{ $slotUtc }}");
-            const options = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit',
-                timeZoneName: 'short'
-            };
+        const slotUtc = "{{ $slotUtc }}"; // UTC format
 
-            const localTime = utcDate.toLocaleString(undefined, options);
 
-            const scheduleElement = document.getElementById('schedule-time');
-            if (scheduleElement) {
-                scheduleElement.innerHTML = "Scheduled for: <strong>" + localTime + "</strong>";
-            }
+        const eventTime = new Date(slotUtc);
+        const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        const localEventTime = eventTime.toLocaleTimeString([], {
+            timeZone: localTimeZone,
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
         });
+
+        document.getElementById("local-time").innerText = `${localEventTime} (${localTimeZone})`;
+
+
+
+
+        // document.addEventListener("DOMContentLoaded", function() {
+        //     const utcDate = new Date("{{ $slotUtc }}");
+        //     const options = {
+        //         weekday: 'long',
+        //         year: 'numeric',
+        //         month: 'long',
+        //         day: 'numeric',
+        //         hour: 'numeric',
+        //         minute: '2-digit',
+        //         timeZoneName: 'short'
+        //     };
+
+        //     const localTime = utcDate.toLocaleString(undefined, options);
+
+        //     const scheduleElement = document.getElementById('schedule-time');
+        //     if (scheduleElement) {
+        //         scheduleElement.innerHTML = "Scheduled for: <strong>" + localTime + "</strong>";
+        //     }
+        // });
     </script>
 </body>
 
