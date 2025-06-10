@@ -196,7 +196,7 @@
 
 
                 <a href="{{ $webinarLink }}">
-                    <img class="img" src="{{ asset('assets/images/play.png') }}" alt="">
+                    <img class="img" src="https://vissabuzz.nexztech.com/assets/images/play.png" alt="">
                 </a>
 
                 <div class="webinar-title">
@@ -207,10 +207,10 @@
 
 
 
-                <!--
+                {{-- <!--
             <div class="schedule-info">
                 Scheduled for: <strong>{{ $slotLocal->format('l, F j @ g:i A T') }}</strong>
-            </div> -->
+            </div> --> --}}
 
                 <a style="color: #fff;" href="{{ $webinarLink }}" class="webinar-btn" target="_blank">View Replay Now</a>
 
