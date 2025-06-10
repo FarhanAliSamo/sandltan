@@ -22,7 +22,7 @@ class WebinarReminderHelper
 
         foreach ($registrations as $registration) {
 
-            
+
 
             $now = Carbon::now('UTC');
             $slot = Carbon::parse($registration->slot);
@@ -31,8 +31,8 @@ class WebinarReminderHelper
 
             // Log actual difference for debugging
             Log::info("User: {$registration->email}, Slot: {$slot}, Now: {$now}, Diff: {$diffInMinutes} mins");
-            
-            
+
+
             // Email 2 mins after registration (test mail)
             // Convert created_at to UTC before calculating difference
             // $createdAtUtc = Carbon::parse($registration->created_at)->setTimezone('UTC');
@@ -47,7 +47,7 @@ class WebinarReminderHelper
             //     );
             // }
 
-            Mail::to($registration->email)->send(new WebinarLiveMail($registration, "Webinar is live now!"));
+            // Mail::to($registration->email)->send(new WebinarLiveMail($registration, "Webinar is live now!"));
 
             if ($diffInMinutes == 61) {
                 Mail::to($registration->email)->send(new WebinarReminderMail($registration, "Webinar starting in an hour"));
@@ -57,10 +57,10 @@ class WebinarReminderHelper
                 Mail::to($registration->email)->send(new WebinarLiveMail($registration, "Webinar is live now!"));
             } elseif ($diffInMinutes == -61) {
                 Mail::to($registration->email)->send(new WebinarReplayMail($registration, "Webinar ended 1 hour ago | Webinar Replay Available"));
-            } 
-             elseif ($diffInMinutes == -1440) {
+            }
+             elseif ($diffInMinutes == -(61*24*2)) { // 2 days after webinar ended
                 Mail::to($registration->email)->send(new WebinarExpireMail($registration, "Webinar Replay Ending Soon"));
-            } 
+            }
             // elseif ($diffInMinutes == -1) {
             //     Mail::to($registration->email)->send(new WebinarReminderMail($registration, "Webinar ended 2 mins ago!"));
             // }
