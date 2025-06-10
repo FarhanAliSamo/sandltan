@@ -1,21 +1,4 @@
-{{-- yeh purana code he is me srf varaible he he jo tum use kar sket ho  --}}
-{{-- <!DOCTYPE html>
-<html>
-<head>
-    <title>Webinar Registration</title>
-</head>
 
-<body>
-    <h2>Hello {{ $registration['name'] }},</h2>
-    <p>Thank you for registering for our webinar.</p>
-    <p><strong>Email:</strong> {{ $registration['email'] }}</p>
-    <p> <a href="{{ route('webinar.show', ['uid' => $registration->unique_id]) }}"><strong>Click here to join
-                Webinar</strong></a> </p>
-    <p>See you soon!</p>
-</body>
-
-</html>
- --}}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -160,7 +143,7 @@
             $slotUtc = Carbon::parse($registration->slot)->toIso8601String(); // stored in UTC
             $slotLocalDefault = Carbon::parse($registration->slot)
                 ->setTimezone('America/Los_Angeles')
-                ->format('l, F j @ g:i A T'); // fallback timezone
+                ->format('l, F j @ g:i A'); // fallback timezone
             $startTime = Carbon::parse($registration->slot)->format('Ymd\THis\Z'); // for calendar
             $endTime = Carbon::parse($registration->slot)->addHour()->format('Ymd\THis\Z');
 
@@ -187,7 +170,7 @@
                 </div>
 
                 <div class="schedule-info" id="schedule-time">
-                    Scheduled for: <strong>tests</strong>
+                    Scheduled for: <strong>{{ $slotLocalDefault }}</strong>
                 </div>
 
                 <a style="color: #fff;" href="{{ $webinarLink }}" class="webinar-btn" target="_blank">Join Webinar</a>
@@ -213,46 +196,6 @@
         </div>
     </div>
 
-
-    <script>
-        const slotUtc = "{{ $slotUtc }}"; // UTC format
-
-
-        const eventTime = new Date(slotUtc);
-        const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-        const localEventTime = eventTime.toLocaleTimeString([], {
-            timeZone: localTimeZone,
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
-
-        document.getElementById("local-time").innerText = `${localEventTime} (${localTimeZone})`;
-
-
-
-
-        // document.addEventListener("DOMContentLoaded", function() {
-        //     const utcDate = new Date("{{ $slotUtc }}");
-        //     const options = {
-        //         weekday: 'long',
-        //         year: 'numeric',
-        //         month: 'long',
-        //         day: 'numeric',
-        //         hour: 'numeric',
-        //         minute: '2-digit',
-        //         timeZoneName: 'short'
-        //     };
-
-        //     const localTime = utcDate.toLocaleString(undefined, options);
-
-        //     const scheduleElement = document.getElementById('schedule-time');
-        //     if (scheduleElement) {
-        //         scheduleElement.innerHTML = "Scheduled for: <strong>" + localTime + "</strong>";
-        //     }
-        // });
-    </script>
 </body>
 
 </html>

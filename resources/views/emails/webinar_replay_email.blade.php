@@ -165,13 +165,7 @@
 
             $name = $registration->name;
             $email = $registration->email;
-            $slotUtc = Carbon::parse($registration->slot)->toIso8601String(); // stored in UTC
-            $slotLocal = Carbon::parse($registration->slot)->setTimezone('America/Los_Angeles'); // Change based on audience region if needed
-            $startTime = Carbon::parse($registration->slot)->format('Ymd\THis\Z'); // for calendar
-            $endTime = Carbon::parse($registration->slot)->addHour()->format('Ymd\THis\Z');
 
-            $title = urlencode('Live Webinar: How to Protect Your Family After You Are Gone');
-            $details = urlencode('Join our live webinar session.');
             $webinarLink = route('webinar.show', ['uid' => $registration->unique_id]);
 
             // $path = public_path('assets/images/play.png');
@@ -206,12 +200,7 @@
                 </div>
 
 
-
-                {{-- <!--
-            <div class="schedule-info">
-                Scheduled for: <strong>{{ $slotLocal->format('l, F j @ g:i A T') }}</strong>
-            </div> --> --}}
-
+ 
                 <a style="color: #fff;" href="{{ $webinarLink }}" class="webinar-btn" target="_blank">View Replay Now</a>
 
 

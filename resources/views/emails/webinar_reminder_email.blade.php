@@ -189,16 +189,12 @@
                 </div>
 
                 <div class="schedule-info">
-                    Scheduled for: <strong>{{ $slotLocal->format('l, F j @ g:i A T') }}</strong>
+                    Scheduled for: <strong>{{ $slotLocal->format('l, F j @ g:i A') }}</strong>
                 </div>
 
                 <a style="color: #fff;" href="{{ $webinarLink }}" class="webinar-btn" target="_blank">Attend Now</a>
 
-                {{-- <div class="calendar-links">
-                <a href="{{ $googleCalendarUrl }}" class="calendar-link" target="_blank">Add to Google Calendar</a>
-                <br><br>
-                <a href="{{ $outlookCalendarUrl }}" class="calendar-link" target="_blank">Add to Outlook Calendar</a>
-            </div> --}}
+
 
                 <div class="disclaimer">
                     You have received this email communication because you signed up for a webinar.

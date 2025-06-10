@@ -209,7 +209,7 @@
 
                 <!--
             <div class="schedule-info">
-                Scheduled for: <strong>{{ $slotLocal->format('l, F j @ g:i A T') }}</strong>
+                Scheduled for: <strong>{{ $slotLocal->format('l, F j @ g:i A') }}</strong>
             </div> -->
 
                 <a style="color: #fff;" href="{{ $webinarLink }}" class="webinar-btn" target="_blank">View Replay Now</a>
