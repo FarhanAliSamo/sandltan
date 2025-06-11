@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WebinarRegistrationController;
 use App\Http\Controllers\WebinarController;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Artisan;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
 Route::get('/run_all', function () {
     Artisan::call('config:clear');
     Artisan::call('cache:clear');
@@ -33,4 +35,14 @@ Route::get('/webinar-show/{uid}', [WebinarController::class, 'show'])
 Route::post('/webinar/question/store', [WebinarController::class, 'QuestionStore'])
     ->name('webinar.question.submit');
 
+
+Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+    // Example admin route
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/questions', [UserController::class, 'userQuestoins'])->name('users.questions');
+    // Add more admin routes here
+});
+
  
+
+require __DIR__ . '/auth.php';

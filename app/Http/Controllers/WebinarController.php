@@ -33,11 +33,11 @@ class WebinarController extends Controller
         }
 
         if ($slotStatus === 'ended') {
-             return view('frontend.webinar.recorded', compact('data')); // show countdown/timer page
+            return view('frontend.webinar.recorded', compact('data')); // show countdown/timer page
         }
 
 
-        Mail::to(env('ADMIN_EMAIL'))->send(new RegistrarAttendMail($data, "Registrar Attend Email Alert!"));
+        Mail::to(env('ADMIN_EMAIL'))->send(new RegistrarAttendMail($data, "Registrant ATTENDED Webinar"));
 
         $data->attend = 1 ;
         $data->save();
@@ -46,7 +46,7 @@ class WebinarController extends Controller
         return view('frontend.webinar.live', compact('data'));
     }
 
-    
+
     public function QuestionStore(Request $request)
     {
         $request->validate([
@@ -67,22 +67,7 @@ class WebinarController extends Controller
         $question->save();
 
         return response()->json(['success' => true, 'message' => 'Question submitted successfully.']);
-
-
-        // try {
-        //     $webinar = WebinarRegistration::findOrFail($request->webinar_id);
-        //     $webinar->questions()->create([
-        //         'question' => $request->question,
-        //         'user_id' => auth()->id(), // Assuming user is authenticated
-        //     ]);
-
-        //     Mail::to($webinar->email)->send(new WebinarRegistrationMail($webinar));
-
-        //     return redirect()->back()->with('success', 'Question submitted successfully.');
-        // } catch (\Exception $e) {
-        //     Log::error('Error submitting question: ' . $e->getMessage());
-        //     return redirect()->back()->with('error', 'Failed to submit question. Please try again later.');
-        // }
+        
     }
 
 }

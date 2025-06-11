@@ -17,9 +17,9 @@ class RegistrarAttendMail extends Mailable
     /**
      * Create a new message instance.
      */
-     public function __construct($registration, $message)
+    public function __construct($registration, $message)
     {
-          $this->registration = $registration;
+        $this->registration = $registration;
         $this->message = $message;
     }
 
@@ -28,7 +28,7 @@ class RegistrarAttendMail extends Mailable
      */
     public function envelope(): Envelope
     {
-          return new Envelope(
+        return new Envelope(
             subject: $this->message,
         );
     }
@@ -37,10 +37,10 @@ class RegistrarAttendMail extends Mailable
      * Get the message content definition.
      */
 
-  public function content(): Content
+    public function content(): Content
     {
         return new Content(
-            view: 'emails.registrar_attend_email',
+            view: 'admin_emails.registrar_attend_email',
         );
     }
 

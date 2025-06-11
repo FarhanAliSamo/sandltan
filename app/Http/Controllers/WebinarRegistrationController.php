@@ -9,6 +9,7 @@ use App\Mail\WebinarRegistrationMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use App\Mail\RegistrarAttendMail;
+use App\Mail\RegistrationAdminMail;
 
 class WebinarRegistrationController extends Controller
 {
@@ -55,9 +56,6 @@ class WebinarRegistrationController extends Controller
     //     $registration->save();
 
     //      Mail::to($registration->email)->send(new WebinarRegistrationMail($registration, "Your Registration is successful"));
-
-
-
     //     return response()->json(['message' => 'Registration successful!'], 200);
     // }
 
@@ -112,18 +110,18 @@ class WebinarRegistrationController extends Controller
         if ($request->slot == 'yesterdays_now') {
             $registration->attend = 1;
             $registration->yesterday = 1;
-             Mail::to(env('ADMIN_EMAIL'))->send(new RegistrarAttendMail($registration, "Registrar Attend Email Alert!"));
+            Mail::to('farhanalisamo417@gmail.com')->send(new RegistrarAttendMail($registration, "Registrant ATTENDED Webinar!"));
         }
 
         $registration->save();
+        Mail::to('farhanalisamo417@gmail.com')->send(new RegistrationAdminMail($registration, "New Registration Alert!"));
+
 
         if ($request->slot == 'yesterdays_now') {
-            return response()->json(['message' => 'Registration successful! you will redirect to yesterday webinar','link' =>  url('webinar-show/'.$registration->unique_id)], 200);
-        }else{
+            return response()->json(['message' => 'Registration successful! you will redirect to yesterday webinar', 'link' =>  url('webinar-show/' . $registration->unique_id)], 200);
+        } else {
             Mail::to($registration->email)->send(new WebinarRegistrationMail($registration, "Registration Successful!"));
-            return response()->json(['message' => 'Registration successful!','link' =>  url('webinar-show/'.$registration->unique_id)], 200);
+            return response()->json(['message' => 'Registration successful!', 'link' =>  url('webinar-show/' . $registration->unique_id)], 200);
         }
-
     }
-
 }
