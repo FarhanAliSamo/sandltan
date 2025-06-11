@@ -26,7 +26,7 @@ Route::get('/run_all', function () {
 });
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
     // return view('frontend.webinar.recorded');
 });
 
@@ -43,6 +43,6 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     // Add more admin routes here
 });
 
- 
+
 
 require __DIR__ . '/auth.php';
