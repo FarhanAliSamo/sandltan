@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class RegistrationAdminMail extends Mailable
+class RegistrationAdminMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
     public $registration;

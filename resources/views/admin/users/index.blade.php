@@ -38,31 +38,33 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($data as $item)
-                                    <tr>
+                                        <tr>
 
-                                        <td>{{$item->id}}</td>
-                                        <td>{{$item->name}}</td>
-                                    <td><a class="text-primary" href="mailto:{{$item->email}}">{{$item->email}}</a></td>
-                                    <td>{{$item->phone}}</td>
+                                            <td>{{ $item->id }}</td>
+                                            <td>{{ $item->name }}</td>
+                                            <td><a class="text-primary"
+                                                    href="mailto:{{ $item->email }}">{{ $item->email }}</a></td>
+                                            <td>{{ $item->phone }}</td>
 
-                                    @if($item->yesterday)
-                                    <td>Yesterdays</td>
-                                    @else
-                                    <td>{{$item->slot}}</td>
-                                    @endif
+                                            @if ($item->yesterday)
+                                                <td>Yesterdays</td>
+                                            @else
+                                                <td>{{ $item->slot }}</td>
+                                            @endif
 
-                                    <td>
-                                        @if($item->attend)
-                                        <span class="badge light badge-primary">Attended <i class="fa-solid fa-check ms-1"></i></span>
-                                        @else
-                                        <span class="badge light badge-danger">Not Yet <i class="fa-solid fa-xmark ms-1"></i></span>
-                                        @endif
+                                            <td>
+                                                @if ($item->attend)
+                                                    <span class="badge light badge-primary">Attended <i
+                                                            class="fa-solid fa-check ms-1"></i></span>
+                                                @else
+                                                    <span class="badge light badge-danger">Not Yet <i
+                                                            class="fa-solid fa-xmark ms-1"></i></span>
+                                                @endif
 
-                                    </td>
-                                    <td>{{$item->created_at}}</td>
+                                            </td>
+                                            <td>{{ $item->created_at }}</td>
 
-                                </tr>
-
+                                        </tr>
                                     @endforeach
 
                                 </tbody>
@@ -74,5 +76,5 @@
         </div>
     </div>
 
-@endsection
 
+@endsection

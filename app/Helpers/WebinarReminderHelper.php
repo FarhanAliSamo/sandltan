@@ -22,10 +22,13 @@ class WebinarReminderHelper
 
         foreach ($registrations as $registration) {
 
+
+
             if ($registration->yesterday) {
                 $now = Carbon::now('UTC');
                 $createdAtUtc = Carbon::parse($registration->created_at)->setTimezone('UTC');
                 $diffInMinutes = $now->diffInMinutes($createdAtUtc, false);
+
                 // Log actual difference for debugging
                 Log::info("User yesterday registered: {$registration->email}, Created : {$createdAtUtc}, Now: {$now}, Diff: {$diffInMinutes} mins");
 
@@ -39,33 +42,31 @@ class WebinarReminderHelper
                 Log::info("User: {$registration->email}, Slot: {$slot}, Now: {$now}, Diff: {$diffInMinutes} mins");
             }
 
+             Mail::to($registration->email)->queue(new WebinarLiveMail($registration, "Webinar is live now!")); // for testing purposes, remove this line in production
 
-            if($registration->yesterday) {
+            if ($registration->yesterday) {
 
-                if($diffInMinutes == -61) {
-                    Mail::to($registration->email)->send(new WebinarReplayMail($registration, "Webinar Attend 1 hour ago | Webinar Replay Available"));
-                }elseif ($diffInMinutes == - 3) { // 2 days after webinar ended
-                    Mail::to($registration->email)->send(new WebinarExpireMail($registration, "Webinar Attend 3 mints ago"));
-                }elseif ($diffInMinutes == - (61 * 24 * 2)) { // 2 days after webinar ended
-                    Mail::to($registration->email)->send(new WebinarExpireMail($registration, "Webinar Replay Ending Soon"));
+                if ($diffInMinutes == -61) {
+                    Mail::to($registration->email)->queue(new WebinarReplayMail($registration, "Webinar Attend 1 hour ago | Webinar Replay Available"));
+                } elseif ($diffInMinutes == -3) { // 2 days after webinar ended
+                    Mail::to($registration->email)->queue(new WebinarExpireMail($registration, "Webinar Attend 3 mints ago"));
+                } elseif ($diffInMinutes == - (61 * 24 * 2)) { // 2 days after webinar ended
+                    Mail::to($registration->email)->queue(new WebinarExpireMail($registration, "Webinar Replay Ending Soon"));
                 }
-
-            }else {
+            } else {
 
                 if ($diffInMinutes == 61) {
-                    Mail::to($registration->email)->send(new WebinarReminderMail($registration, "Webinar starting in an hour"));
+                    Mail::to($registration->email)->queue(new WebinarReminderMail($registration, "Webinar starting in an hour"));
                 } elseif ($diffInMinutes == 5) {
-                    Mail::to($registration->email)->send(new WebinarReminderMail($registration, "Webinar starting in 5 minutes "));
+                    Mail::to($registration->email)->queue(new WebinarReminderMail($registration, "Webinar starting in 5 minutes "));
                 } elseif ($diffInMinutes == 0) {
-                    Mail::to($registration->email)->send(new WebinarLiveMail($registration, "Webinar is live now!"));
+                    Mail::to($registration->email)->queue(new WebinarLiveMail($registration, "Webinar is live now!"));
                 } elseif ($diffInMinutes == -61) {
-                    Mail::to($registration->email)->send(new WebinarReplayMail($registration, "Webinar ended 1 hour ago | Webinar Replay Available"));
+                    Mail::to($registration->email)->queue(new WebinarReplayMail($registration, "Webinar ended 1 hour ago | Webinar Replay Available"));
                 } elseif ($diffInMinutes == - (61 * 24 * 2)) { // 2 days after webinar ended
-                    Mail::to($registration->email)->send(new WebinarExpireMail($registration, "Webinar Replay Ending Soon"));
+                    Mail::to($registration->email)->queue(new WebinarExpireMail($registration, "Webinar Replay Ending Soon"));
                 }
-
             }
-
         }
     }
 
@@ -74,7 +75,7 @@ class WebinarReminderHelper
         $now = Carbon::now('UTC');
         $slot = Carbon::parse($registration->slot); // already in UTC
 
-        if($registration->yesterday) {
+        if ($registration->yesterday) {
             return 'ended';
         }
 

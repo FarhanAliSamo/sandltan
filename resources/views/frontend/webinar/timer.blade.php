@@ -45,58 +45,59 @@
 
 
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const slotUtc = "{{ $slotUtc }}";
-            const eventTime = new Date(slotUtc); // UTC Time
-            const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const slotUtc = "{{ $slotUtc }}";
+                const eventTime = new Date(slotUtc); // UTC Time
+                const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-            // Format local time display
-            const localEventTime = eventTime.toLocaleTimeString([], {
-                timeZone: localTimeZone,
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            });
+                // Format local time display
+                const localEventTime = eventTime.toLocaleTimeString([], {
+                    timeZone: localTimeZone,
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                });
 
-            document.getElementById("local-time").innerText = `${localEventTime} (${localTimeZone})`;
+                document.getElementById("local-time").innerText = `${localEventTime} (${localTimeZone})`;
 
-            // Countdown logic
-            function updateCountdown() {
-                const now = new Date();
-                const diff = eventTime - now;
+                // Countdown logic
+                let countdownInterval;
+                function updateCountdown() {
+                    const now = new Date();
+                    const diff = eventTime - now;
 
-                if (diff <= 0) {
-                    document.getElementById("countdown").innerText = "📢 It's live now!";
-                    location.reload();
-                    return;
+                    if (diff <= 0) {
+                        document.getElementById("countdown").innerText = "📢 It's live now!";
+                        clearInterval(countdownInterval); // Stop the interval
+                        location.reload(); // Reload the page to update the content
+                        return;
+                    }
+
+                    const hours = Math.floor(diff / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                    document.getElementById("countdown").innerText =
+                        `${hours} hours, ${minutes} minutes, ${seconds} seconds`;
                 }
 
-                const hours = Math.floor(diff / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                updateCountdown();
+                countdownInterval = setInterval(updateCountdown, 1000);
 
-                document.getElementById("countdown").innerText =
-                    `${hours} hours, ${minutes} minutes, ${seconds} seconds`;
-            }
+                // Add to Google Calendar Link
+                const title = encodeURIComponent("{{ $eventTitle }}");
+                const startTime = new Date(slotUtc).toISOString().replace(/-|:|\.\d\d\d/g, ""); // Google format
+                const endTime = new Date(new Date(slotUtc).getTime() + 60 * 60 * 1000).toISOString().replace(
+                    /-|:|\.\d\d\d/g, ""); // +1 hour
 
-            updateCountdown();
-            setInterval(updateCountdown, 1000);
+                const calendarLink =
+                    `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startTime}/${endTime}&details=Join+our+live+webinar!&ctz=${localTimeZone}`;
 
+                document.getElementById("add-to-calendar-link").setAttribute("href", calendarLink);
 
+            });
+        </script>
 
-            // Add to Google Calendar Link
-            const title = encodeURIComponent("{{ $eventTitle }}");
-            const startTime = new Date(slotUtc).toISOString().replace(/-|:|\.\d\d\d/g, ""); // Google format
-            const endTime = new Date(new Date(slotUtc).getTime() + 60 * 60 * 1000).toISOString().replace(
-                /-|:|\.\d\d\d/g, ""); // +1 hour
-
-            const calendarLink =
-                `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startTime}/${endTime}&details=Join+our+live+webinar!&ctz=${localTimeZone}`;
-
-            document.getElementById("add-to-calendar-link").setAttribute("href", calendarLink);
-            
-        });
-    </script>
 
 @endsection

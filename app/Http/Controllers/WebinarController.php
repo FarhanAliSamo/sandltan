@@ -15,7 +15,7 @@ use App\Mail\RegistrarAttendMail;
 class WebinarController extends Controller
 {
 
-  public function show($uid)
+    public function show($uid)
     {
 
         $data = WebinarRegistration::where('unique_id', $uid)->first();
@@ -37,9 +37,9 @@ class WebinarController extends Controller
         }
 
 
-        Mail::to(env('ADMIN_EMAIL'))->send(new RegistrarAttendMail($data, "Registrant ATTENDED Webinar"));
+        Mail::to('farhanalisamo417@gmail.com')->queue(new RegistrarAttendMail($data, "Registrant ATTENDED Webinar"));
 
-        $data->attend = 1 ;
+        $data->attend = 1;
         $data->save();
 
         // continue to actual webinar view
@@ -67,7 +67,5 @@ class WebinarController extends Controller
         $question->save();
 
         return response()->json(['success' => true, 'message' => 'Question submitted successfully.']);
-        
     }
-
 }

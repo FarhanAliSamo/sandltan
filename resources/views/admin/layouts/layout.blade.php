@@ -4,7 +4,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sandltan | Admin Pannel</title>
-{{-- <link rel="shortcut icon" type="image/png" href="/assets/admin/images/favicon.png"> --}}
+<link rel="shortcut icon" type="image/png" href="/assets/images/favicon.png">
 
 <link href="/assets/admin/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
 <link href="/assets/admin/vendor/datatables/responsive/responsive.css" rel="stylesheet" type="text/css"/>
@@ -81,8 +81,9 @@
                             transform="translate(133.63 53.217)" fill="#464646" />
                     </g>
                 </svg> --}}
-                {{-- <img src="/assets/admin/images/logo-full.png" class="logo_header" alt=""> --}}
-                <h3 style="text-align: center" class="text-primary">Sandltan</h3>
+                <img src="{{asset('assets/images/sandltan_logo_transparent.png')}}" class="logo_header" alt="">
+                {{-- <h3 style="text-align: center" class="text-primary">Sandltan</h3> --}}
+
 
             </a>
             <div class="nav-control">

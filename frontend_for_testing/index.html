@@ -107,8 +107,19 @@
                     contentType: 'application/json',
                     data: JSON.stringify(formData),
                     success: function(response) {
+                    console.log('Response:', response);
+                        // Show success message
                         $('#response').addClass('success').text('Registration successful!');
                         $('#registrationForm')[0].reset();
+
+
+                        if (response.link) {
+                            setTimeout(() => {
+                                window.open(response.link, '_blank');
+                            }, 1000);
+                        }
+
+
                     },
                     error: function(xhr) {
                         let errorMessage = 'An error occurred';

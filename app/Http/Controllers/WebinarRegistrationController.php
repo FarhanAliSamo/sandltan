@@ -110,17 +110,17 @@ class WebinarRegistrationController extends Controller
         if ($request->slot == 'yesterdays_now') {
             $registration->attend = 1;
             $registration->yesterday = 1;
-            Mail::to('farhanalisamo417@gmail.com')->send(new RegistrarAttendMail($registration, "Registrant ATTENDED Webinar!"));
+            Mail::to('farhanalisamo417@gmail.com')->queue(new RegistrarAttendMail($registration, "Registrant ATTENDED Webinar!"));
         }
 
         $registration->save();
-        Mail::to('farhanalisamo417@gmail.com')->send(new RegistrationAdminMail($registration, "New Registration Alert!"));
+        Mail::to('farhanalisamo417@gmail.com')->queue(new RegistrationAdminMail($registration, "New Registration Alert!"));
 
 
         if ($request->slot == 'yesterdays_now') {
             return response()->json(['message' => 'Registration successful! you will redirect to yesterday webinar', 'link' =>  url('webinar-show/' . $registration->unique_id)], 200);
         } else {
-            Mail::to($registration->email)->send(new WebinarRegistrationMail($registration, "Registration Successful!"));
+            Mail::to($registration->email)->queue(new WebinarRegistrationMail($registration, "Registration Successful!"));
             return response()->json(['message' => 'Registration successful!', 'link' =>  url('webinar-show/' . $registration->unique_id)], 200);
         }
     }
