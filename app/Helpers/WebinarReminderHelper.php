@@ -42,15 +42,12 @@ class WebinarReminderHelper
                 Log::info("User: {$registration->email}, Slot: {$slot}, Now: {$now}, Diff: {$diffInMinutes} mins");
             }
 
-             Mail::to($registration->email)->queue(new WebinarLiveMail($registration, "Webinar is live now!")); // for testing purposes, remove this line in production
 
             if ($registration->yesterday) {
 
                 if ($diffInMinutes == -61) {
                     Mail::to($registration->email)->queue(new WebinarReplayMail($registration, "Webinar Attend 1 hour ago | Webinar Replay Available"));
-                } elseif ($diffInMinutes == -3) { // 2 days after webinar ended
-                    Mail::to($registration->email)->queue(new WebinarExpireMail($registration, "Webinar Attend 3 mints ago"));
-                } elseif ($diffInMinutes == - (61 * 24 * 2)) { // 2 days after webinar ended
+                }elseif ($diffInMinutes == - (61 * 24 * 2)) { // 2 days after webinar ended
                     Mail::to($registration->email)->queue(new WebinarExpireMail($registration, "Webinar Replay Ending Soon"));
                 }
             } else {
