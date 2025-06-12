@@ -33,6 +33,7 @@
                                         <th>Phone</th>
                                         <th>Slot</th>
                                         <th>Attend</th>
+                                        <th>Questions</th>
                                         <th>Create Date</th>
                                     </tr>
                                 </thead>
@@ -62,6 +63,17 @@
                                                 @endif
 
                                             </td>
+
+                                            <td class="text-center">
+                                                <button class="btn btn-primary  view-questions-btn"
+                                                    data-bs-toggle="modal" data-bs-target="#questionsModal"
+                                                    data-questions='@json($item->questions)'
+                                                    data-username="{{ $item->name }}">
+                                                    {{ $item->questions->count() }}
+                                                </button>
+                                            </td>
+
+                                            {{-- <td class="text-center">{{ $item->questions->count() }}</td> --}}
                                             <td>{{ $item->created_at }}</td>
 
                                         </tr>
@@ -76,5 +88,62 @@
         </div>
     </div>
 
+
+
+
+
+    <!-- Questions Modal -->
+    <div class="modal fade" id="questionsModal" tabindex="-1" aria-labelledby="questionsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">User Questions - <span id="modalUserName"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <ul id="questionsList" class="list-group">
+                        <!-- JS will populate -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = new bootstrap.Modal(document.getElementById('questionsModal'));
+        const questionsList = document.getElementById('questionsList');
+        const modalUserName = document.getElementById('modalUserName');
+
+        document.querySelectorAll('.view-questions-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const questions = JSON.parse(button.getAttribute('data-questions'));
+                const username = button.getAttribute('data-username');
+
+                modalUserName.textContent = username;
+                questionsList.innerHTML = '';
+
+                if (questions.length === 0) {
+                    questionsList.innerHTML = '<li class="list-group-item text-muted">No questions found.</li>';
+                } else {
+                    questions.forEach(q => {
+                        const item = document.createElement('li');
+                        item.classList.add('list-group-item');
+                        item.innerHTML = `
+                            <strong>${q.question}</strong>
+                            <br>
+                            <small class="text-secondary">Asked on: ${new Date(q.created_at).toLocaleString()}</small>
+                        `;
+                        questionsList.appendChild(item);
+                    });
+                }
+            });
+        });
+    });
+</script>
 
 @endsection

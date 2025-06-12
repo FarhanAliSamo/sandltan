@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\WebinarReminderHelper;
 use App\Mail\RegistrarAttendMail;
+use App\Mail\WebinarQuestionMail;
 
 class WebinarController extends Controller
 {
@@ -65,6 +66,15 @@ class WebinarController extends Controller
         $question->uid = $request->uid;
         $question->webinar_registration_id = $registration->id;
         $question->save();
+
+        $data = [
+            'question' => $question->question,
+            'registration' => $registration,
+        ];
+
+        // Send email to admin with the question
+        Mail::to('farhanalisamo417@gmail.com')->queue(new WebinarQuestionMail($data, "New webinar question! - CA Trust Law, AРС"));
+
 
         return response()->json(['success' => true, 'message' => 'Question submitted successfully.']);
     }
