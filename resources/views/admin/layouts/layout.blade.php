@@ -4,7 +4,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sandltan | Admin Pannel</title>
-<link rel="shortcut icon" type="image/png" href="/assets/images/favicon.png">
+<link rel="shortcut icon" type="image/png" href="{{asset('assets/images/favicon.png')}}">
 
 <link href="/assets/admin/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
 <link href="/assets/admin/vendor/datatables/responsive/responsive.css" rel="stylesheet" type="text/css"/>

@@ -11,7 +11,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
 
     <title>VisaBuzz</title>
-    <link rel="icon" type="image/png" href="/assets/admin/images/favicon.png" />
+<link rel="shortcut icon" type="image/png" href="{{asset('assets/images/favicon.png')}}">
 
     <!-- CSS Assets -->
     <link rel="stylesheet" href="/assets/admin/css/app.css" />
@@ -45,8 +45,8 @@
 
     <!-- Page Wrapper -->
     <div id="root" class="min-h-100vh flex grow bg-slate-50" x-cloak>
-       
-      
+
+
       <!-- Sidebar -->
         <div class="sidebar print:hidden">
             <!-- Main Sidebar -->
@@ -2882,19 +2882,19 @@
             </div>
         </div>
 
-      
+
 
         @yield('main_content')
- 
+
     </div> <!-- Page Wrapper end-->
-    
+
     <div id="x-teleport-target"></div>
     <script>
         window.addEventListener("DOMContentLoaded", () => Alpine.start());
     </script>
 
     @yield('script')
-    
+
 </body>
- 
+
 </html>
