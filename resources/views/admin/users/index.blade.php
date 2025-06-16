@@ -2,6 +2,7 @@
 
 
 @section('main_content')
+
     <div class="container-fluid">
 
         <div class="row page-titles mb-4 py-3">
@@ -87,10 +88,6 @@
             </div>
         </div>
     </div>
-
-
-
-
 
     <!-- Questions Modal -->
     <div class="modal fade" id="questionsModal" tabindex="-1" aria-labelledby="questionsModalLabel"

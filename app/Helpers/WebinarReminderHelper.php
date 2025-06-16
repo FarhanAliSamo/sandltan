@@ -51,16 +51,15 @@ class WebinarReminderHelper
                     Mail::to($registration->email)->queue(new WebinarExpireMail($registration, "Webinar Replay Ending Soon"));
                 }
             } else {
-
-                if ($diffInMinutes == 61) {
+                if ($diffInMinutes <= 61 && $diffInMinutes > 60) {
                     Mail::to($registration->email)->queue(new WebinarReminderMail($registration, "Webinar starting in an hour"));
-                } elseif ($diffInMinutes == 5) {
-                    Mail::to($registration->email)->queue(new WebinarReminderMail($registration, "Webinar starting in 5 minutes "));
-                } elseif ($diffInMinutes == 0) {
+                } elseif ($diffInMinutes <= 5 && $diffInMinutes > 4) {
+                    Mail::to($registration->email)->queue(new WebinarReminderMail($registration, "Webinar starting in 5 minutes"));
+                } elseif ($diffInMinutes <= 0 && $diffInMinutes > -1) {
                     Mail::to($registration->email)->queue(new WebinarLiveMail($registration, "Webinar is live now!"));
-                } elseif ($diffInMinutes == -61) {
+                } elseif ($diffInMinutes <= -61 && $diffInMinutes > -62) {
                     Mail::to($registration->email)->queue(new WebinarReplayMail($registration, "Webinar ended 1 hour ago | Webinar Replay Available"));
-                } elseif ($diffInMinutes == - (61 * 24 * 2)) { // 2 days after webinar ended
+                } elseif ($diffInMinutes <= -(61 * 24 * 2) && $diffInMinutes > -(61 * 24 * 2) - 1) { // 2 days after webinar ended
                     Mail::to($registration->email)->queue(new WebinarExpireMail($registration, "Webinar Replay Ending Soon"));
                 }
             }
