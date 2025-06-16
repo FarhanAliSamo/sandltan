@@ -8,7 +8,7 @@
 
 <p><strong>Question: </strong>
 {{ $data['question'] }}
-</p>b
+</p>
 
 
 
