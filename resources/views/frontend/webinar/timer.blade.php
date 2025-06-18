@@ -84,7 +84,7 @@
             const seconds = totalSeconds % 60;
 
             document.getElementById("countdown").innerText =
-                `${days}days ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+                `${days} days ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
         }
 
 
