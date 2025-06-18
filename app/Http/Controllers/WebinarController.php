@@ -38,7 +38,7 @@ class WebinarController extends Controller
         }
 
 
-        Mail::to('farhanalisamo417@gmail.com')->queue(new RegistrarAttendMail($data, "Registrant ATTENDED Webinar"));
+        Mail::to(WebinarReminderHelper::getAdminEmail())->queue(new RegistrarAttendMail($data, "Registrant ATTENDED Webinar"));
 
         $data->attend = 1;
         $data->save();
@@ -73,7 +73,7 @@ class WebinarController extends Controller
         ];
 
         // Send email to admin with the question
-        Mail::to('farhanalisamo417@gmail.com')->queue(new WebinarQuestionMail($data, "New webinar question! - CA Trust Law, AРС"));
+        Mail::to(WebinarReminderHelper::getAdminEmail())->queue(new WebinarQuestionMail($data, "New webinar question! - CA Trust Law, AРС"));
 
 
         return response()->json(['success' => true, 'message' => 'Question submitted successfully.']);
