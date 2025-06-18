@@ -6,7 +6,7 @@
     @php
         // Laravel se slot UTC me bhej rahe ho
         $slotUtc = \Carbon\Carbon::parse($data->slot)->toIso8601String(); // e.g., 2025-06-04T12:26:00Z
-        $eventTitle = 'Live Webinar'; // title for the event
+        $eventTitle = 'Live Webinar: How to Protect Your Family After You Are Gone'; // title for the event
     @endphp
 
 
@@ -46,58 +46,62 @@
 
 
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const slotUtc = "{{ $slotUtc }}";
-                const eventTime = new Date(slotUtc); // UTC Time
-                const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    document.addEventListener("DOMContentLoaded", function () {
+        const slotUtc = "{{ $slotUtc }}";
+        const eventUtcDate = new Date(slotUtc);
+        const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-                // Format local time display
-                const localEventTime = eventTime.toLocaleTimeString([], {
-                    timeZone: localTimeZone,
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true
-                });
+        // Local time formatting with day, date, and timezone
+        const localFormatted = eventUtcDate.toLocaleString('en-US', {
+            timeZone: localTimeZone,
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
 
-                document.getElementById("local-time").innerText = `${localEventTime} (${localTimeZone})`;
+        document.getElementById("local-time").innerText = `${localFormatted} (${localTimeZone})`;
 
-                // Countdown logic
-                let countdownInterval;
-                function updateCountdown() {
-                    const now = new Date();
-                    const diff = eventTime - now;
+        // Countdown Timer
+        function updateCountdown() {
+            const now = new Date();
+            const diff = eventUtcDate - now;
 
-                    if (diff <= 0) {
-                        document.getElementById("countdown").innerText = "📢 It's live now!";
-                        clearInterval(countdownInterval); // Stop the interval
-                        location.reload(); // Reload the page to update the content
-                        return;
-                    }
+            if (diff <= 0) {
+                document.getElementById("countdown").innerText = "📢 It's live now!";
+                clearInterval(countdownInterval);
+                location.reload();
+                return;
+            }
 
-                    const hours = Math.floor(diff / (1000 * 60 * 60));
-                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            const totalSeconds = Math.floor(diff / 1000);
+            const days = Math.floor(totalSeconds / (3600 * 24));
+            const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
 
-                    document.getElementById("countdown").innerText =
-                        `${hours} hours, ${minutes} minutes, ${seconds} seconds`;
-                }
+            document.getElementById("countdown").innerText =
+                `${days}days ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+        }
 
-                updateCountdown();
-                countdownInterval = setInterval(updateCountdown, 1000);
 
-                // Add to Google Calendar Link
-                const title = encodeURIComponent("{{ $eventTitle }}");
-                const startTime = new Date(slotUtc).toISOString().replace(/-|:|\.\d\d\d/g, ""); // Google format
-                const endTime = new Date(new Date(slotUtc).getTime() + 60 * 60 * 1000).toISOString().replace(
-                    /-|:|\.\d\d\d/g, ""); // +1 hour
 
-                const calendarLink =
-                    `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startTime}/${endTime}&details=Join+our+live+webinar!&ctz=${localTimeZone}`;
 
-                document.getElementById("add-to-calendar-link").setAttribute("href", calendarLink);
+        updateCountdown();
+        const countdownInterval = setInterval(updateCountdown, 1000);
 
-            });
-        </script>
+        // Google Calendar Link
+        const title = encodeURIComponent("{{ $eventTitle }}");
+        const startTime = eventUtcDate.toISOString().replace(/[-:]/g, "").replace(/\.\d+Z$/, "Z");
+        const endTime = new Date(eventUtcDate.getTime() + 60 * 60 * 1000).toISOString().replace(/[-:]/g, "").replace(/\.\d+Z$/, "Z");
+
+        const calendarLink = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startTime}/${endTime}&details=Join+our+live+webinar!&ctz=${localTimeZone}`;
+        document.getElementById("add-to-calendar-link").setAttribute("href", calendarLink);
+    });
+</script>
 
 
 @endsection

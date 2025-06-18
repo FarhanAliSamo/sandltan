@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -140,22 +139,63 @@
 
             $name = $registration->name;
             $email = $registration->email;
-            $slotUtc = Carbon::parse($registration->slot)->toIso8601String(); // stored in UTC
-            $slotLocalDefault = Carbon::parse($registration->slot)
-                ->setTimezone('America/Los_Angeles')
-                ->format('l, F j @ g:i A'); // fallback timezone
-            $startTime = Carbon::parse($registration->slot)->format('Ymd\THis\Z'); // for calendar
-            $endTime = Carbon::parse($registration->slot)->addHour()->format('Ymd\THis\Z');
+            // $slotUtc = Carbon::parse($registration->slot)->toIso8601String(); // stored in UTC
+            // $slotLocalDefault = Carbon::parse($registration->slot)
+            //     ->setTimezone('America/Los_Angeles')
+            //     ->format('l, F j @ g:i A'); // fallback timezone
+
+            // $slotLocal = Carbon::parse($registration->slot)
+            //     ->setTimezone($registration->timezone)
+            //     ->format('l, F j, Y \\a\\t g:i A (T)');
+
+            // $startTime = Carbon::parse($registration->slot)->format('Ymd\THis\Z'); // for calendar
+            // $endTime = Carbon::parse($registration->slot)->addHour()->format('Ymd\THis\Z');
+
+            // $title = urlencode('Live Webinar: How to Protect Your Family After You Are Gone');
+            // $details = urlencode('Join our live webinar session.');
+            // $webinarLink = route('webinar.show', ['uid' => $registration->unique_id]);
+
+            // $googleCalendarUrl = "https://www.google.com/calendar/render?action=TEMPLATE&text={$title}&dates={$startTime}/{$endTime}&details={$details}&location={$webinarLink}";
+            // $outlookCalendarUrl =
+            //     "https://outlook.live.com/owa/?path=/calendar/action/compose&rru=addevent&startdt={$slotUtc}&enddt=" .
+            //     Carbon::parse($registration->slot)->addHour()->toIso8601String() .
+            //     "&subject={$title}&body={$details}&location={$webinarLink}";
+
+            $timezone = $registration->timezone;
+
+            // Webinar time in user's local timezone
+            $slotLocal = Carbon::parse($registration->slot)->setTimezone($timezone);
+            $slotLocalFormatted = $slotLocal->format('l, F j, Y \\a\\t g:i A (T)');
+
+            // Calendar start & end time in local timezone (not UTC)
+            $startTime = $slotLocal->format('Ymd\THis'); // e.g. 20250620T140000
+            $endTime = $slotLocal->copy()->addHour()->format('Ymd\THis');
+
+            $startTimeIso = $slotLocal->toIso8601String(); // for Outlook
+            $endTimeIso = $slotLocal->copy()->addHour()->toIso8601String();
 
             $title = urlencode('Live Webinar: How to Protect Your Family After You Are Gone');
             $details = urlencode('Join our live webinar session.');
             $webinarLink = route('webinar.show', ['uid' => $registration->unique_id]);
 
-            $googleCalendarUrl = "https://www.google.com/calendar/render?action=TEMPLATE&text={$title}&dates={$startTime}/{$endTime}&details={$details}&location={$webinarLink}";
+            // ✅ Google Calendar URL (with local time and timezone name)
+            $googleCalendarUrl =
+                'https://www.google.com/calendar/render?action=TEMPLATE' .
+                "&text={$title}" .
+                "&dates={$startTime}/{$endTime}" .
+                "&details={$details}" .
+                "&location={$webinarLink}" .
+                '&ctz=' .
+                urlencode($timezone); // e.g. Asia/Karachi
+
+            // ✅ Outlook Calendar URL (with ISO 8601 local time)
             $outlookCalendarUrl =
-                "https://outlook.live.com/owa/?path=/calendar/action/compose&rru=addevent&startdt={$slotUtc}&enddt=" .
-                Carbon::parse($registration->slot)->addHour()->toIso8601String() .
-                "&subject={$title}&body={$details}&location={$webinarLink}";
+                'https://outlook.live.com/owa/?path=/calendar/action/compose&rru=addevent' .
+                "&startdt={$startTimeIso}" .
+                "&enddt={$endTimeIso}" .
+                "&subject={$title}" .
+                "&body={$details}" .
+                "&location={$webinarLink}";
         @endphp
 
         <div class="email-container" style="box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
@@ -170,7 +210,7 @@
                 </div>
 
                 <div class="schedule-info" id="schedule-time">
-                    Scheduled for: <strong>{{ $slotLocalDefault }}</strong>
+                    Scheduled for: <strong>{{ $slotLocalFormatted }}</strong>
                 </div>
 
                 <a style="color: #fff;" href="{{ $webinarLink }}" class="webinar-btn" target="_blank">Join Webinar</a>

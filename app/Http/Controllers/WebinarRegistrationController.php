@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use App\Mail\RegistrarAttendMail;
 use App\Mail\RegistrationAdminMail;
+use App\Helpers\WebinarReminderHelper;
 
 class WebinarRegistrationController extends Controller
 {
-
 
     // public function register(Request $request)
     // {
@@ -72,7 +72,15 @@ class WebinarRegistrationController extends Controller
             $slotUtc = Carbon::now('UTC')->subMinute();
         } else {
             // Otherwise, parse the provided slot (assumed UTC)
-            $slotUtc = Carbon::parse($request->slot);
+            $localTime = Carbon::parse($request->slot, $request->timezone); // User input in local
+            $slotUtc = $localTime->copy()->setTimezone('UTC');
+            // $slotUtc = Carbon::parse($request->slot);
+
+              Log::info("Local time : " . $localTime);
+              Log::info("Converted UTC time : " . $slotUtc);
+              Log::info("Current UTC time: " . Carbon::now('UTC')->format('Y-m-d H:i:s e'));
+              //Log::info("Converted to local time: " . $userLocalTime->format('Y-m-d H:i:s e'));
+
         }
 
 
@@ -80,13 +88,10 @@ class WebinarRegistrationController extends Controller
         //$userLocalTime = $slotUtc->copy()->setTimezone('Asia/Karachi');
 
         // Debugging logs
-        Log::info("Input slot (UTC): " . $slotUtc->format('Y-m-d H:i:s e'));
-        //Log::info("Converted to local time: " . $userLocalTime->format('Y-m-d H:i:s e'));
-        Log::info("Current UTC time: " . Carbon::now('UTC')->format('Y-m-d H:i:s e'));
 
 
         // Optional: Store user's timezone name or offset for UI
-        $timezoneOffset = $slotUtc->getTimezone()->getName();
+        // $timezoneOffset = $slotUtc->getTimezone()->getName();
 
 
         if ($request->slot != 'yesterdays_now') {
@@ -104,17 +109,17 @@ class WebinarRegistrationController extends Controller
         $registration->email = $request->email;
         $registration->phone = $request->phone;
         $registration->slot = $slotUtc; // Save in global time (UTC)
-        $registration->timezone = $timezoneOffset;
+        $registration->timezone = $request->timezone;
         $registration->unique_id = bin2hex(random_bytes(16));
 
         if ($request->slot == 'yesterdays_now') {
             $registration->attend = 1;
             $registration->yesterday = 1;
-            Mail::to('farhanalisamo417@gmail.com')->queue(new RegistrarAttendMail($registration, "Registrant ATTENDED Webinar!"));
+            Mail::to(WebinarReminderHelper::getAdminEmail())->queue(new RegistrarAttendMail($registration, "Registrant ATTENDED Webinar!"));
         }
 
         $registration->save();
-        Mail::to('farhanalisamo417@gmail.com')->queue(new RegistrationAdminMail($registration, "New Registration Alert!"));
+        Mail::to(WebinarReminderHelper::getAdminEmail())->queue(new RegistrationAdminMail($registration, "New Registration Alert!"));
 
 
         if ($request->slot == 'yesterdays_now') {

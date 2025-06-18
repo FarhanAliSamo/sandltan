@@ -145,7 +145,7 @@
             $slotUtc = Carbon::parse($registration->slot)->toIso8601String(); // stored in UTC
             $slotLocalDefault = Carbon::parse($registration->slot)
                 ->setTimezone('America/Los_Angeles')
-                ->format('l, F j @ g:i A'); // fallback timezone
+                ->format('l, F j @ g:i A T'); // fallback timezone with PDT/PST
         }
         // $startTime = Carbon::parse($registration->slot)->format('Ymd\THis\Z'); // for calendar
         // $endTime = Carbon::parse($registration->slot)->addHour()->format('Ymd\THis\Z');

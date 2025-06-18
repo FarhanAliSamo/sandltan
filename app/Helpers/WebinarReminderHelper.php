@@ -85,4 +85,9 @@ class WebinarReminderHelper
             return 'ended'; // already finished
         }
     }
+
+    public static function getAdminEmail()
+    {
+        return 'farhanalisamo417@gmail.com';
+    }
 }

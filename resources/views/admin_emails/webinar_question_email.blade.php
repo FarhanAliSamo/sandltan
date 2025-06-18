@@ -10,6 +10,4 @@
 {{ $data['question'] }}
 </p>
 
-
-
 <p><strong>Submitted via: </strong> Webianr Portal</p>

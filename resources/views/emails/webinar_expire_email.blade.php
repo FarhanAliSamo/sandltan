@@ -162,13 +162,13 @@
             use Carbon\Carbon;
             use Illuminate\Support\Facades\Log;
 
-
             $name = $registration->name;
             $email = $registration->email;
-            $slotUtc = Carbon::parse($registration->slot)->toIso8601String(); // stored in UTC
-            $slotLocal = Carbon::parse($registration->slot)->setTimezone('America/Los_Angeles'); // Change based on audience region if needed
-            $startTime = Carbon::parse($registration->slot)->format('Ymd\THis\Z'); // for calendar
-            $endTime = Carbon::parse($registration->slot)->addHour()->format('Ymd\THis\Z');
+            $timezone = $registration->timezone;
+
+            // Webinar time in user's local timezone
+            $slotLocal = Carbon::parse($registration->slot)->setTimezone($timezone);
+            $slotLocalFormatted = $slotLocal->format('l, F j, Y \\a\\t g:i A (T)');
 
             $title = urlencode('Live Webinar: How to Protect Your Family After You Are Gone');
             $details = urlencode('Join our live webinar session.');
@@ -183,8 +183,8 @@
             //     $base64 = '';
             // }
 
-
             // Log::info('base 64 image: ' . $base64);
+
         @endphp
 
         <div class="email-container" style="box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
@@ -207,12 +207,13 @@
 
 
 
-                <!--
-            <div class="schedule-info">
-                Scheduled for: <strong>{{ $slotLocal->format('l, F j @ g:i A') }}</strong>
-            </div> -->
 
-                <a style="color: #fff;" href="{{ $webinarLink }}" class="webinar-btn" target="_blank">View Replay Now</a>
+                <div class="schedule-info">
+                    Scheduled for: <strong>{{$slotLocalFormatted }}</strong>
+                </div>
+
+                <a style="color: #fff;" href="{{ $webinarLink }}" class="webinar-btn" target="_blank">View Replay
+                    Now</a>
 
 
                 <div class="disclaimer">

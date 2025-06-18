@@ -12,20 +12,21 @@ use Illuminate\Queue\SerializesModels;
 class WebinarReminderMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
-  public $registration;
+    public $registration;
     public $message;
     /**
      * Create a new message instance.
      */
-   public function __construct($registration, $message)
+    public function __construct($registration, $message)
     {
-          $this->registration = $registration;
+        $this->registration = $registration;
         $this->message = $message;
     }
 
     /**
      * Get the message envelope.
      */
+    
     public function envelope(): Envelope
     {
         return new Envelope(
