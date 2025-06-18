@@ -2,19 +2,23 @@
 
 
 @section('main_content')
+    @php
+        use Carbon\Carbon;
+        $slotLocal = Carbon::parse($data->slot)->setTimezone($data->timezone);
+        $slotLocalFormatted = $slotLocal->format('l, F j, Y \\a\\t g:i A (T)');
+    @endphp
 
     <div class="container-fluid">
 
         <div class="row page-titles mb-4 py-3">
 
             <div class="d-flex align-items-center flex-wrap">
-                <h3 class="me-auto my-0">Users</h3>
-                {{-- <div>
-                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target=".create-modal-lg"
-                        class="btn btn-primary me-3"><i class="fas fa-plus me-2"></i>Add
-                        User
+                <h3 class="me-auto my-0">User Detail </h3>
+                <div>
+                    <a href="{{ route('admin.users.index') }}" class="btn btn-primary me-3"><i
+                            class="fa-solid fa-arrow-left me-2"></i> Back to Users List</a>
                     </a>
-                </div> --}}
+                </div>
             </div>
         </div>
 
@@ -24,65 +28,43 @@
                 <div class="card">
 
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table id="example3" class="display" style="min-width: 845px">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Slot</th>
-                                        <th>Attend</th>
-                                        <th>Questions</th>
-                                        <th>Create Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($data as $item)
-                                        <tr>
 
-                                            <td>{{ $item->id }}</td>
-                                            <td>{{ $item->name }}</td>
-                                            <td><a class="text-primary"
-                                                    href="mailto:{{ $item->email }}">{{ $item->email }}</a></td>
-                                            <td>{{ $item->phone }}</td>
+                        <div class="row g-2 gy-4">
 
-                                            @if ($item->yesterday)
-                                                <td>Yesterdays</td>
-                                            @else
-                                                <td>{{ $item->slot }}</td>
-                                            @endif
+                            <div class="col-lg-6">
+                                <h2 class="text-primary user-detail-name">{{ $data->name }} </h2>
+                                <p class="user-detail-id">#{{ $data->unique_id }}</p>
+                                <h4 class="my-1 user-detail-list">{{ $data->phone }}</h4>
+                                <h4 class="my-1 user-detail-list">{{ $data->email }}</h4>
 
-                                            <td>
-                                                @if ($item->attend)
-                                                    <span class="badge light badge-primary">Attended <i
-                                                            class="fa-solid fa-check ms-1"></i></span>
-                                                @else
-                                                    <span class="badge light badge-danger">Not Yet <i
-                                                            class="fa-solid fa-xmark ms-1"></i></span>
-                                                @endif
 
-                                            </td>
 
-                                            <td class="text-center">
-                                                <button class="btn btn-primary  view-questions-btn"
-                                                    data-bs-toggle="modal" data-bs-target="#questionsModal"
-                                                    data-questions='@json($item->questions)'
-                                                    data-username="{{ $item->name }}">
-                                                    {{ $item->questions->count() }}
-                                                </button>
-                                            </td>
+                                <h4 class="my-1 user-detail-list">{{ $slotLocalFormatted }}</h4>
 
-                                            {{-- <td class="text-center">{{ $item->questions->count() }}</td> --}}
-                                            <td>{{ $item->created_at }}</td>
+                            </div>
 
-                                        </tr>
+                            <div class="col-lg-6">
+
+                                <h2 class="text-primary">Questions</h2>
+
+                                <ul id="questionsList" class="list-group my-3">
+
+                                    @foreach ($data->questions as $question )
+                                    <li class="list-group-item">
+                                        <strong>{{$question->question}}</strong>
+                                        <br>
+                                        <small class="text-secondary">Asked on: {{ \Carbon\Carbon::parse($question->created_at)->format('l, F j, Y \\a\\t g:i A') }}</small>
+                                    </li>
                                     @endforeach
 
-                                </tbody>
-                            </table>
+                                </ul>
+
+                            </div>
+
+
+
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -90,8 +72,7 @@
     </div>
 
     <!-- Questions Modal -->
-    <div class="modal fade" id="questionsModal" tabindex="-1" aria-labelledby="questionsModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="questionsModal" tabindex="-1" aria-labelledby="questionsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -111,36 +92,36 @@
 
 
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const modal = new bootstrap.Modal(document.getElementById('questionsModal'));
-        const questionsList = document.getElementById('questionsList');
-        const modalUserName = document.getElementById('modalUserName');
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = new bootstrap.Modal(document.getElementById('questionsModal'));
+            const questionsList = document.getElementById('questionsList');
+            const modalUserName = document.getElementById('modalUserName');
 
-        document.querySelectorAll('.view-questions-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const questions = JSON.parse(button.getAttribute('data-questions'));
-                const username = button.getAttribute('data-username');
+            document.querySelectorAll('.view-questions-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const questions = JSON.parse(button.getAttribute('data-questions'));
+                    const username = button.getAttribute('data-username');
 
-                modalUserName.textContent = username;
-                questionsList.innerHTML = '';
+                    modalUserName.textContent = username;
+                    questionsList.innerHTML = '';
 
-                if (questions.length === 0) {
-                    questionsList.innerHTML = '<li class="list-group-item text-muted">No questions found.</li>';
-                } else {
-                    questions.forEach(q => {
-                        const item = document.createElement('li');
-                        item.classList.add('list-group-item');
-                        item.innerHTML = `
+                    if (questions.length === 0) {
+                        questionsList.innerHTML =
+                            '<li class="list-group-item text-muted">No questions found.</li>';
+                    } else {
+                        questions.forEach(q => {
+                            const item = document.createElement('li');
+                            item.classList.add('list-group-item');
+                            item.innerHTML = `
                             <strong>${q.question}</strong>
                             <br>
                             <small class="text-secondary">Asked on: ${new Date(q.created_at).toLocaleString()}</small>
                         `;
-                        questionsList.appendChild(item);
-                    });
-                }
+                            questionsList.appendChild(item);
+                        });
+                    }
+                });
             });
         });
-    });
-</script>
-
+    </script>
 @endsection

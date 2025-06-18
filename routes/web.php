@@ -32,6 +32,7 @@ Route::get('/', function () {
 
 Route::get('/webinar-show/{uid}', [WebinarController::class, 'show'])
     ->name('webinar.show');
+
 Route::post('/webinar/question/store', [WebinarController::class, 'QuestionStore'])
     ->name('webinar.question.submit');
 
@@ -39,6 +40,7 @@ Route::post('/webinar/question/store', [WebinarController::class, 'QuestionStore
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     // Example admin route
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/show/{uid}', [UserController::class, 'show'])->name('users.show');
     Route::get('/users/questions', [UserController::class, 'userQuestoins'])->name('users.questions');
     // Add more admin routes here
 });

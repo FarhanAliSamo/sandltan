@@ -65,7 +65,8 @@
             border-radius: 25px;
             font-weight: 500;
             font-size: 14px;
-            margin-bottom: 30px;
+              margin-bottom: 10px;
+            margin-top: 10px;
             transition: background-color 0.3s ease;
         }
 
@@ -184,7 +185,8 @@
 
                     <p>Session Id : <strong>{{ $registration->unique_id }}</strong></p>
 
-                    <br>
+                    <a style="color: #fff;" href="{{ route('admin.users.show', $registration->unique_id) }}" class="webinar-btn" target="_blank">View User</a>
+
                     <p>{{ $name }} has register for the webinar</p>
 
                 </div>

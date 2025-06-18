@@ -36,6 +36,7 @@
                                         <th>Attend</th>
                                         <th>Questions</th>
                                         <th>Create Date</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -76,6 +77,9 @@
 
                                             {{-- <td class="text-center">{{ $item->questions->count() }}</td> --}}
                                             <td>{{ $item->created_at }}</td>
+                                            <td>
+                                                <a href="{{route('admin.users.show',$item->unique_id)}}" class="btn btn-primary"><i class="fa-regular fa-eye"></i></a>
+                                            </td>
 
                                         </tr>
                                     @endforeach
