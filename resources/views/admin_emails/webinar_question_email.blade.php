@@ -9,11 +9,6 @@
     {{ $data['question'] }}
 </p>
 
-
-
-<a  href="{{ route('admin.users.show', $data['registration']->unique_id) }}"
-    target="_blank">View User</a>
-
-
+<a href="{{ route('admin.users.show', $data['registration']->unique_id) }}" target="_blank">View User</a>
 
 <p><strong>Submitted via: </strong> Webianr Portal</p>

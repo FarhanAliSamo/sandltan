@@ -33,27 +33,33 @@
                                         <th>Phone</th>
                                         <th>Questoins</th>
                                         <th>Create Date</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($data as $item)
-                                    <tr>
+                                        <tr>
 
-                                        <td>{{$item->id}}</td>
-                                        <td>{{$item->registration->name}}</td>
+                                            <td>{{ $item->id }}</td>
+                                            <td>{{ $item->registration->name }}</td>
 
-                                    <td><a class="text-primary" href="mailto:{{$item->registration->email}}">{{$item->registration->email}}</a></td>
-                                    <td>{{$item->registration->phone}}</td>
-
-
-                                    <td>{{$item->question}}</td>
-
+                                            <td><a class="text-primary"
+                                                    href="mailto:{{ $item->registration->email }}">{{ $item->registration->email }}</a>
+                                            </td>
+                                            <td>{{ $item->registration->phone }}</td>
 
 
-                                    <td>{{$item->created_at}}</td>
+                                            <td>{{ $item->question }}</td>
 
-                                </tr>
 
+
+                                            <td>{{ $item->created_at }}</td>
+                                            <td>
+                                                <a href="{{ route('admin.users.show', $item->registration->unique_id) }}"
+                                                    class="btn btn-primary">View All</a>
+                                            </td>
+
+                                        </tr>
                                     @endforeach
 
                                 </tbody>
@@ -64,6 +70,4 @@
             </div>
         </div>
     </div>
-
 @endsection
-
