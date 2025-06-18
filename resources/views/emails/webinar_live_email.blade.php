@@ -162,7 +162,7 @@
             use Carbon\Carbon;
 
             $ename = $registration->name;
-            $email = $rgistration->email;
+            $email = $registration->email;
 
             $title = urlencode('Live Webinar: How to Protect Your Family After You Are Gone');
             $details = urlencode('Join our live webinar session.');
