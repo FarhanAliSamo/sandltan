@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Set Video Current Time</title>
+    </head>
+    <body>
+        <video
+            id="myVideo"
+            class="video"
+            oncontextmenu="return false;"
+            disablePictureInPicture
+            controlsList="nodownload noremoteplayback noplaybackrate"
+        >
+            <source src="webinar.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+
+        <button onclick="jumpToTime()">Jump to 10 seconds</button>
+
+        <script>
+            function jumpToTime() {
+                let video = document.getElementById("myVideo");
+                video.currentTime = 200; // Jumps to 10 seconds
+                video.play(); // Optional: Start playing the video from that time
+            }
+        </script>
+    </body>
+</html>

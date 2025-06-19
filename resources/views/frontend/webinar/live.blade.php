@@ -5,6 +5,11 @@
 
     @php
         use Carbon\Carbon;
+
+        $slot = Carbon::parse($data->slot)->timezone('UTC');
+        $nowUtc = Carbon::now('UTC');
+
+        $diffInSeconds = $nowUtc->greaterThan($slot) ? $nowUtc->diffInSeconds($slot) : 0; // If not yet time, 0
     @endphp
 
     <div class="shadow-sm">
@@ -44,11 +49,19 @@
 
 
 
-                    <video id="video" src="{{ asset('assets/videos/webinar.mp4') }}" class="video" controls
+                    {{-- <video id="video" src="{{ asset('assets/videos/webinar.mp4') }}" class="video" controls
                         controlsList="nodownload noremoteplayback noplaybackrate" disablePictureInPicture
-                        oncontextmenu="return false;">
-                </div>
+                        oncontextmenu="return false;"> --}}
 
+                    <video id="video" src="{{ asset('assets/videos/webinar.mp4') }}" class="video"
+                        oncontextmenu="return false;" disablePictureInPicture
+                        controlsList=" nodownload noremoteplayback noplaybackrate">
+                    </video>
+
+
+
+                </div>
+              
                 <form onsubmit="QuestionSubmit(event)" class="qa_box_container mt-3">
                     <label class="qa_label">Please use this box to ask your questions. Responses will be sent to <span
                             class="qa_label_span">
@@ -93,11 +106,39 @@
 @section('scripts')
 
 
+
     <script>
+        const video = document.getElementById('video');
+
         function playHandle() {
-            $('#video').get(0).play();
+
+            let diffInSeconds = '{{ $diffInSeconds }}'
+
+            console.log(diffInSeconds)
+
+
+            if (diffInSeconds < 0) diffInSeconds = 0;
+
+            const maxDuration = 2160; // 36 minutes in seconds
+
+            // Agar slot time se zyada waqt guzar gaya ho
+            if (diffInSeconds >= maxDuration) {
+
+
+            }
+
+            video.currentTime = diffInSeconds;
+
+            video.play();
+
+
+            // UI handling
             $('#videOverLay').addClass('d-none');
+            $('#videoPlaceHolder').addClass('d-none');
+            $('#videoContainer').removeClass('d-none');
         }
+
+
 
         $(document).ready(function() {
             $('#videoPlaceHolder').addClass('d-none');

@@ -82,8 +82,7 @@ class WebinarRegistrationController extends Controller
               //Log::info("Converted to local time: " . $userLocalTime->format('Y-m-d H:i:s e'));
 
         }
-
-
+ 
         // 2. If you need to display it in user's local time (As    ia/Karachi)
         //$userLocalTime = $slotUtc->copy()->setTimezone('Asia/Karachi');
 
