@@ -6,7 +6,7 @@
     @php
         use Carbon\Carbon;
 
-        $slotTimeUTC = Carbon::parse($data->slot)->timezone('UTC');
+        // $slotTimeUTC = Carbon::parse($data->slot)->timezone('UTC');
 
     @endphp
 
@@ -109,6 +109,7 @@
         const video = document.getElementById('video');
 
         function playHandle() {
+            const slotTimeUTC = "{{ \Carbon\Carbon::parse($data->slot)->format('Y-m-d\TH:i:s\Z') }}";
             const slot = new Date(slotTimeUTC); // UTC slot time
             const now = new Date(); // JS ka current time (local)
 
