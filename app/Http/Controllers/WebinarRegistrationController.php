@@ -61,71 +61,62 @@ class WebinarRegistrationController extends Controller
 
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|max:12',
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'phone' => 'required|max:12',
+            ]);
 
-        if ($request->slot == 'yesterdays_now') {
-            // If 'yesterdays_now' is set, save current UTC time minus 1 minute
-            $slotUtc = Carbon::now('UTC')->subMinute();
-        } else {
-            // Otherwise, parse the provided slot (assumed UTC)
-            $localTime = Carbon::parse($request->slot, $request->timezone); // User input in local
-            $slotUtc = $localTime->copy()->setTimezone('UTC');
-            // $slotUtc = Carbon::parse($request->slot);
+            if ($request->slot == 'yesterdays_now') {
+                // If 'yesterdays_now' is set, save current UTC time minus 1 minute
+                $slotUtc = Carbon::now('UTC')->subMinute();
+            } else {
+                // Otherwise, parse the provided slot (assumed UTC)
+                $localTime = Carbon::parse($request->slot, $request->timezone); // User input in local
+                $slotUtc = $localTime->copy()->setTimezone('UTC');
 
-              Log::info("Local time : " . $localTime);
-              Log::info("Converted UTC time : " . $slotUtc);
-              Log::info("Current UTC time: " . Carbon::now('UTC')->format('Y-m-d H:i:s e'));
-              //Log::info("Converted to local time: " . $userLocalTime->format('Y-m-d H:i:s e'));
-
-        }
- 
-        // 2. If you need to display it in user's local time (As    ia/Karachi)
-        //$userLocalTime = $slotUtc->copy()->setTimezone('Asia/Karachi');
-
-        // Debugging logs
-
-
-        // Optional: Store user's timezone name or offset for UI
-        // $timezoneOffset = $slotUtc->getTimezone()->getName();
-
-
-        if ($request->slot != 'yesterdays_now') {
-            $existing = WebinarRegistration::where('slot', $slotUtc)
-                ->where('email', $request->email)
-                ->first();
-
-            if ($existing) {
-                return response()->json(['message' => 'You have already registered for this slot.'], 400);
+                Log::info("Local time : " . $localTime);
+                Log::info("Converted UTC time : " . $slotUtc);
+                Log::info("Current UTC time: " . Carbon::now('UTC')->format('Y-m-d H:i:s e'));
             }
-        }
 
-        $registration = new WebinarRegistration();
-        $registration->name = $request->name;
-        $registration->email = $request->email;
-        $registration->phone = $request->phone;
-        $registration->slot = $slotUtc; // Save in global time (UTC)
-        $registration->timezone = $request->timezone;
-        $registration->unique_id = bin2hex(random_bytes(16));
+            if ($request->slot != 'yesterdays_now') {
+                $existing = WebinarRegistration::where('slot', $slotUtc)
+                    ->where('email', $request->email)
+                    ->first();
 
-        if ($request->slot == 'yesterdays_now') {
-            $registration->attend = 1;
-            $registration->yesterday = 1;
-            Mail::to(WebinarReminderHelper::getAdminEmail())->queue(new RegistrarAttendMail($registration, "Registrant ATTENDED Webinar!"));
-        }
+                if ($existing) {
+                    return response()->json(['message' => 'Registration successful!', 'link' =>  url('webinar-show/' . $existing->unique_id)], 200);
+                }
+            }
 
-        $registration->save();
-        Mail::to(WebinarReminderHelper::getAdminEmail())->queue(new RegistrationAdminMail($registration, "New Registration Alert!"));
+            $registration = new WebinarRegistration();
+            $registration->name = $request->name;
+            $registration->email = $request->email;
+            $registration->phone = $request->phone;
+            $registration->slot = $slotUtc; // Save in global time (UTC)
+            $registration->timezone = $request->timezone;
+            $registration->unique_id = bin2hex(random_bytes(16));
 
+            if ($request->slot == 'yesterdays_now') {
+                $registration->attend = 1;
+                $registration->yesterday = 1;
+                Mail::to(WebinarReminderHelper::getAdminEmail())->queue(new RegistrarAttendMail($registration, "Registrant ATTENDED Webinar!"));
+            }
 
-        if ($request->slot == 'yesterdays_now') {
-            return response()->json(['message' => 'Registration successful! you will redirect to yesterday webinar', 'link' =>  url('webinar-show/' . $registration->unique_id)], 200);
-        } else {
-            Mail::to($registration->email)->queue(new WebinarRegistrationMail($registration, "Registration Successful!"));
-            return response()->json(['message' => 'Registration successful!', 'link' =>  url('webinar-show/' . $registration->unique_id)], 200);
+            $registration->save();
+            Mail::to(WebinarReminderHelper::getAdminEmail())->queue(new RegistrationAdminMail($registration, "New Registration Alert!"));
+
+            if ($request->slot == 'yesterdays_now') {
+                return response()->json(['message' => 'Registration successful! you will redirect to yesterday webinar', 'link' =>  url('webinar-show/' . $registration->unique_id)], 200);
+            } else {
+                Mail::to($registration->email)->queue(new WebinarRegistrationMail($registration, "Registration Successful!"));
+                return response()->json(['message' => 'Registration successful!', 'link' =>  url('webinar-show/' . $registration->unique_id)], 200);
+            }
+        } catch (\Exception $e) {
+            Log::error('Webinar registration failed: ' . $e->getMessage());
+            return response()->json(['message' => 'Registration failed. Please try again later.'], 500);
         }
     }
 }
