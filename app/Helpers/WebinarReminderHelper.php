@@ -75,9 +75,9 @@ class WebinarReminderHelper
         if ($registration->yesterday) {
             return 'ended';
         }
-
-        // Webinar is considered "live" for 15 minutes duration
-        if ($now->between($slot, $slot->copy()->addMinutes(60))) {
+        // Webinar is considered "live" for 36 minutes and 12 seconds duration
+        $liveEnd = $slot->copy()->addMinutes(36)->addSeconds(12);
+        if ($now->between($slot, $liveEnd)) {
             return 'live';
         } elseif ($now->lt($slot)) {
             return 'before'; // not started yet

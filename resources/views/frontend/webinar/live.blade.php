@@ -6,10 +6,8 @@
     @php
         use Carbon\Carbon;
 
-        $slot = Carbon::parse($data->slot)->timezone('UTC');
-        $nowUtc = Carbon::now('UTC');
+        $slotTimeUTC = Carbon::parse($data->slot)->timezone('UTC');
 
-        $diffInSeconds = $nowUtc->greaterThan($slot) ? $nowUtc->diffInSeconds($slot) : 0; // If not yet time, 0
     @endphp
 
     <div class="shadow-sm">
@@ -61,7 +59,7 @@
 
 
                 </div>
-              
+
                 <form onsubmit="QuestionSubmit(event)" class="qa_box_container mt-3">
                     <label class="qa_label">Please use this box to ask your questions. Responses will be sent to <span
                             class="qa_label_span">
@@ -111,26 +109,24 @@
         const video = document.getElementById('video');
 
         function playHandle() {
+            const slot = new Date(slotTimeUTC); // UTC slot time
+            const now = new Date(); // JS ka current time (local)
 
-            let diffInSeconds = '{{ $diffInSeconds }}'
+            // UTC mein convert karo (already UTC, but for safety)
+            const nowUtc = new Date(now.toISOString());
 
-            console.log(diffInSeconds)
-
-
+            // Difference in seconds
+            let diffInSeconds = Math.floor((nowUtc - slot) / 1000);
             if (diffInSeconds < 0) diffInSeconds = 0;
 
-            const maxDuration = 2160; // 36 minutes in seconds
-
-            // Agar slot time se zyada waqt guzar gaya ho
+            const maxDuration = 2170; // 36 min - 10 sec minutes in seconds
             if (diffInSeconds >= maxDuration) {
-
-
+                diffInSeconds = maxDuration;
             }
 
+            const video = document.getElementById('video');
             video.currentTime = diffInSeconds;
-
             video.play();
-
 
             // UI handling
             $('#videOverLay').addClass('d-none');
