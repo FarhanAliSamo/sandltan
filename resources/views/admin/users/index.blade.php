@@ -114,14 +114,16 @@
 
 
 
-    <script>
+<script>
     document.addEventListener('DOMContentLoaded', function () {
-        const modal = new bootstrap.Modal(document.getElementById('questionsModal'));
         const questionsList = document.getElementById('questionsList');
         const modalUserName = document.getElementById('modalUserName');
+        const modal = new bootstrap.Modal(document.getElementById('questionsModal'));
 
-        document.querySelectorAll('.view-questions-btn').forEach(button => {
-            button.addEventListener('click', () => {
+        // Use event delegation for dynamically generated rows
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('view-questions-btn')) {
+                const button = e.target;
                 const questions = JSON.parse(button.getAttribute('data-questions'));
                 const username = button.getAttribute('data-username');
 
@@ -135,14 +137,15 @@
                         const item = document.createElement('li');
                         item.classList.add('list-group-item');
                         item.innerHTML = `
-                            <strong>${q.question}</strong>
-                            <br>
+                            <strong>${q.question}</strong><br>
                             <small class="text-secondary">Asked on: ${new Date(q.created_at).toLocaleString()}</small>
                         `;
                         questionsList.appendChild(item);
                     });
                 }
-            });
+
+                modal.show();
+            }
         });
     });
 </script>
