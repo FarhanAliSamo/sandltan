@@ -88,7 +88,6 @@ class WebinarReminderHelper
 
     public static function getAdminEmail()
     {
-        return 'farhanalisamo417@gmail.com';
-        // return 'marc@catrusts.law';
+        return 'marc@catrusts.law';
     }
 }
