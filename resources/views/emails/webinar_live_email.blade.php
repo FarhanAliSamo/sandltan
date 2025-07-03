@@ -179,7 +179,7 @@
 
 
                 <a href="{{ $webinarLink }}">
-                    <img class="img" src="https://vissabuzz.nexztech.com/assets/images/play.png" alt="">
+                    <img class="img" src="https://app.catrusts.law/assets/images/play.png" alt="">
                     <!--<img class="img" src="{{ asset('assets/images/play.png') }}" alt="">-->
                 </a>
 

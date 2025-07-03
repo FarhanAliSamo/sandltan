@@ -190,7 +190,7 @@
 
 
                 <a href="{{ $webinarLink }}">
-                    <img class="img" src="https://vissabuzz.nexztech.com/assets/images/play.png" alt="">
+                    <img class="img" src="https://app.catrusts.law/assets/images/play.png" alt="">
                 </a>
 
                 <div class="webinar-title">
@@ -200,7 +200,7 @@
                 </div>
 
 
- 
+
                 <a style="color: #fff;" href="{{ $webinarLink }}" class="webinar-btn" target="_blank">View Replay Now</a>
 
 

@@ -196,7 +196,7 @@
 
 
                 <a href="{{ $webinarLink }}">
-                    <img class="img" src="https://vissabuzz.nexztech.com/assets/images/time.png" alt="">
+                    <img class="img" src="https://app.catrusts.law/assets/images/time.png" alt="">
                 </a>
 
                 <div class="webinar-title">
