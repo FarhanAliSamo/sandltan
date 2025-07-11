@@ -89,27 +89,30 @@
 
         function calculateCurrentTime() {
             const slotTimeUTC = "{{ \Carbon\Carbon::parse($data->slot)->format('Y-m-d\\TH:i:s\\Z') }}";
-            console.log("Slot Time UTC:", slotTimeUTC);
             const slot = new Date(slotTimeUTC);
-            console.log("Slot Date Object:", slot);
             const now = new Date();
-            console.log("Now Local Date Object:", now);
             const nowUtc = new Date(now.toISOString());
-            console.log("Now UTC Date Object:", nowUtc);
 
             let diffInSeconds = Math.floor((nowUtc - slot) / 1000);
-            console.log("Difference in Seconds (raw):", diffInSeconds);
             const maxDuration = 2170; // 36 mins 10 sec
+
+            console.log('slotTimeUTC:', slotTimeUTC);
+            console.log('slot:', slot);
+            console.log('now:', now);
+            console.log('nowUtc:', nowUtc);
+            console.log('diffInSeconds:', diffInSeconds);
+
             if (diffInSeconds < 0) diffInSeconds = 0;
-            if (diffInSeconds > maxDuration) diffInSeconds = maxDuration;
+            if (diffInSeconds > maxDuration) {
+            console.log('Reloading page, maxDuration reached');
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+            return maxDuration;
+            }
 
-            //just for debugging
-            const minutes = Math.floor(diffInSeconds / 60);
-            const seconds = diffInSeconds % 60;
-            console.log(`Current Time (clamped): ${minutes}m ${seconds}s`);
-
-
-            return diffInSeconds;
+            console.log('Returning:', diffInSeconds - 2);
+            return diffInSeconds - 2;
         }
 
         function autoPlayVideo() {

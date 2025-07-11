@@ -54,7 +54,7 @@ class WebinarReminderHelper
                     Mail::to($registration->email)->queue(new WebinarReminderMail($registration, "Webinar starting in an hour"));
                 } elseif ($diffInMinutes == 5) {
                     Mail::to($registration->email)->queue(new WebinarReminderMail($registration, "Webinar starting in 5 minutes "));
-                } elseif ($diffInMinutes == 0 && $now->diffInSeconds($slot, false) >= -10 && $now->diffInSeconds($slot, false) <= -5) {
+                } elseif ($diffInMinutes == 0 && $now->diffInSeconds($slot, false) === 0) {
                     // Log::info("Webinar is about to go live in 5-10 seconds: {$diffInMinutes} mins, Seconds diff: " . $now->diffInSeconds($slot, false));
                     Mail::to($registration->email)->queue(new WebinarLiveMail($registration, "Webinar is live now!"));
                 } elseif ($diffInMinutes == -97) { // 1 hour after webinar ended
@@ -75,7 +75,7 @@ class WebinarReminderHelper
             return 'ended';
         }
         // Webinar is considered "live" for 36 minutes and 12 seconds duration
-        $liveEnd = $slot->copy()->addMinutes(36)->addSeconds(03);
+        $liveEnd = $slot->copy()->addMinutes(36)->addSeconds(12);
         if ($now->between($slot, $liveEnd)) {
             return 'live';
         } elseif ($now->lt($slot)) {
