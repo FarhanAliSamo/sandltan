@@ -22,8 +22,6 @@ class WebinarReminderHelper
 
         foreach ($registrations as $registration) {
 
-
-
             if ($registration->yesterday) {
                 $now = Carbon::now('UTC');
                 $createdAtUtc = Carbon::parse($registration->created_at)->setTimezone('UTC');
@@ -45,7 +43,7 @@ class WebinarReminderHelper
 
             if ($registration->yesterday) {
 
-                if ($diffInMinutes == -61) {
+                if ($diffInMinutes == -97) {
                     Mail::to($registration->email)->queue(new WebinarReplayMail($registration, "Webinar Attend 1 hour ago | Webinar Replay Available"));
                 }elseif ($diffInMinutes == - (61 * 24 * 2)) { // 2 days after webinar ended
                     Mail::to($registration->email)->queue(new WebinarExpireMail($registration, "Webinar Replay Ending Soon"));
@@ -56,9 +54,10 @@ class WebinarReminderHelper
                     Mail::to($registration->email)->queue(new WebinarReminderMail($registration, "Webinar starting in an hour"));
                 } elseif ($diffInMinutes == 5) {
                     Mail::to($registration->email)->queue(new WebinarReminderMail($registration, "Webinar starting in 5 minutes "));
-                } elseif ($diffInMinutes == 0) {
+                } elseif ($diffInMinutes == 0 && $now->diffInSeconds($slot, false) === 0) {
+                     Log::info("Liveeeeeeeee ".$diffInMinutes);
                     Mail::to($registration->email)->queue(new WebinarLiveMail($registration, "Webinar is live now!"));
-                } elseif ($diffInMinutes == -61) {
+                } elseif ($diffInMinutes == -97) { // 1 hour after webinar ended
                     Mail::to($registration->email)->queue(new WebinarReplayMail($registration, "Webinar ended 1 hour ago | Webinar Replay Available"));
                 } elseif ($diffInMinutes == - (61 * 24 * 2)) { // 2 days after webinar ended
                     Mail::to($registration->email)->queue(new WebinarExpireMail($registration, "Webinar Replay Ending Soon"));

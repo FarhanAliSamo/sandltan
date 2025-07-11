@@ -12,16 +12,16 @@ class UserController extends Controller
     public function index()
     {
         $data = WebinarRegistration::with('questions')->orderBy('id', 'desc')->get();
-
         return view('admin.users.index', compact('data'));
     }
+
     public function show($uid)
     {
         $data = WebinarRegistration::with('questions')->where('unique_id',$uid)->first();
-
         // dd($data);
         return view('admin.users.show', compact('data'));
     }
+
     public function userQuestoins()
     {
         $data = WebinarQuestion::with('registration')->orderBy('id', 'desc')->get();
