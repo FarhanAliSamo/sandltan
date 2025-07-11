@@ -24,7 +24,7 @@
 
                 <div id="videoPlaceHolder" class="placeholder-wave video_placeholder"></div>
 
-                <div id="videoContainer" class="video_container">
+                <div id="videoContainer" class="d-none video_container">
                     <div class="live-indicator">
                         <div class="live-dot"></div>
                         LIVE
@@ -97,7 +97,7 @@
             const maxDuration = 2170; // 36 mins 10 sec
             if (diffInSeconds < 0) diffInSeconds = 0;
             if (diffInSeconds > maxDuration) diffInSeconds = maxDuration;
-
+            console.log("Current Time in Seconds: " + diffInSeconds);
             return diffInSeconds;
         }
 
