@@ -102,7 +102,13 @@
             const maxDuration = 2170; // 36 mins 10 sec
             if (diffInSeconds < 0) diffInSeconds = 0;
             if (diffInSeconds > maxDuration) diffInSeconds = maxDuration;
-            console.log("Current Time in Seconds (clamped):", diffInSeconds);
+
+            //just for debugging
+            const minutes = Math.floor(diffInSeconds / 60);
+            const seconds = diffInSeconds % 60;
+            console.log(`Current Time (clamped): ${minutes}m ${seconds}s`);
+
+
             return diffInSeconds;
         }
 
