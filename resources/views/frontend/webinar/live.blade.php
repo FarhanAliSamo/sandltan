@@ -111,8 +111,8 @@
             return maxDuration;
             }
 
-            console.log('Returning:', diffInSeconds - 2);
-            return diffInSeconds - 2;
+            console.log('Returning:', diffInSeconds - 5);
+            return diffInSeconds - 5;
         }
 
         function autoPlayVideo() {
