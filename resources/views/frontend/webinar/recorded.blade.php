@@ -40,9 +40,8 @@
 
 
 
-                    <video id="video" src="{{ asset('assets/videos/webinar.mp4') }}" class="video" controls
-                        controlsList="nodownload  " disablePictureInPicture
-                        oncontextmenu="return false;">
+                    <video id="video" src="{{ asset('assets/videos/webinar.mp4') }}" autoplay muted class="video"
+                        controls controlsList="nodownload  " disablePictureInPicture oncontextmenu="return false;">
                 </div>
 
                 <form onsubmit="QuestionSubmit(event)" class="qa_box_container mt-3">
@@ -91,8 +90,10 @@
 
     <script>
         function playHandle() {
-            $('#video').get(0).play();
-            $('#videOverLay').addClass('d-none');
+            const video = $('#video').get(0); // Get the video element
+            video.muted = false; // Unmute the video
+            video.play(); // Play the video
+            $('#videOverLay').addClass('d-none'); // Hide overlay
         }
 
         $(document).ready(function() {
