@@ -41,7 +41,7 @@ class WebinarReminderHelper
             }
 
 
-            if ($registration->yesterday) {
+            if ($registration->yesterday) { 
 
                 if ($diffInMinutes == -97) {
                     Mail::to($registration->email)->queue(new WebinarReplayMail($registration, "Webinar Attend 1 hour ago | Webinar Replay Available"));
