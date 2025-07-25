@@ -16,7 +16,7 @@ class WebinarReminderHelper
 
     public static function sendReminders()
     {
-        Log::info("sendReminders() function called");
+        Log::info("sendReminders() - called");
 
         $registrations = WebinarRegistration::all();
 
@@ -55,7 +55,7 @@ class WebinarReminderHelper
                 } elseif ($diffInMinutes == 5) {
                     Mail::to($registration->email)->queue(new WebinarReminderMail($registration, "Webinar starting in 5 minutes "));
                 } elseif ($diffInMinutes == 0 && $now->diffInSeconds($slot, false) === 0) {
-                     Log::info("--------------live---------------");
+                    //  Log::info("--------------live---------------");
                     // Log::info("Webinar is about to go live in 5-10 seconds: {$diffInMinutes} mins, Seconds diff: " . $now->diffInSeconds($slot, false));
                     Mail::to($registration->email)->queue(new WebinarLiveMail($registration, "Webinar is live now!"));
                 } elseif ($diffInMinutes == -97) { // 1 hour after webinar ended
