@@ -16,7 +16,7 @@ class WebinarReminderHelper
 
     public static function sendReminders()
     {
-        Log::info("⏰ sendReminders() function called");
+        Log::info("sendReminders() function called");
 
         $registrations = WebinarRegistration::all();
 
@@ -76,7 +76,9 @@ class WebinarReminderHelper
         }
         // Webinar is considered "live" for 36 minutes and 12 seconds duration
         $liveEnd = $slot->copy()->addMinutes(36)->addSeconds(12);
+
         if ($now->between($slot, $liveEnd)) {
+            Log::info("live");
             return 'live';
         } elseif ($now->lt($slot)) {
             return 'before'; // not started yet

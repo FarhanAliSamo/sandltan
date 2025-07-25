@@ -140,7 +140,7 @@ class WebinarRegistrationController extends Controller
             : Carbon::parse($request->slot, $request->timezone)->copy()->setTimezone('UTC');
 
         // Log slot conversion info (for debugging)
-        Log::info("📅 Registration Slot UTC: " . $slotUtc);
+        Log::info("Registration Slot UTC: " . $slotUtc);
 
         // ✅ Step 3: Check for existing registration if not yesterday
         if (!$isYesterdaySlot) {
@@ -172,7 +172,7 @@ class WebinarRegistrationController extends Controller
         }
 
         $registration->save();
-        Log::info("✅ Webinar registration saved:", $registration->toArray());
+        Log::info(" Webinar registration saved:", $registration->toArray());
 
         // ✅ Step 5: Send Mails
         if ($isYesterdaySlot) {
